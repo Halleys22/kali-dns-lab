@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 export LC_ALL=C
-cd -- "$(dirname -- "${BASH_SOURCE[0]}")"
-
-named-checkconf -z bind/named.conf
-
-log=$(mktemp)
+source_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+runtime=$(sudo mktemp -d /var/cache/bind/kali-dns-lab.XXXXXXXX)
+log="$runtime/named.log"
 pid=
 cleanup() {
     result=$?
@@ -13,10 +11,15 @@ cleanup() {
         kill "$pid" 2>/dev/null || true
         wait "$pid" 2>/dev/null || true
     fi
-    if (( result != 0 )); then cat -- "$log" >&2; fi
-    rm -f -- "$log"
+    if (( result != 0 )) && [[ -f "$log" ]]; then cat -- "$log" >&2; fi
+    sudo rm -rf -- "$runtime"
 }
 trap cleanup EXIT
+
+sudo chown "$(id -u):$(id -g)" "$runtime"
+cp -r -- "$source_dir/bind" "$runtime/"
+cd -- "$runtime"
+named-checkconf -z bind/named.conf
 
 named -g -n 1 -c "$PWD/bind/named.conf" >"$log" 2>&1 &
 pid=$!
