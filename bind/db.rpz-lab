@@ -1,0 +1,5 @@
+$TTL 60
+@                 IN SOA localhost. hostmaster.localhost. ( 1 1h 15m 1w 60 )
+@                 IN NS  localhost.
+bloqueado.test    IN CNAME .
+*.bloqueado.test  IN CNAME .
