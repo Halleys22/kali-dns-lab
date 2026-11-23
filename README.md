@@ -12,7 +12,7 @@ sudo apt install bind9 bind9-utils dnsutils
 bash comprobar.sh
 ```
 
-El script arranca una instancia temporal de BIND en `127.0.0.1:5300` y la detiene al salir. El puerto 5300 debe estar libre. La instancia usa la configuración del repositorio y las consultas se dirigen explícitamente a ella.
+El script arranca una instancia temporal de BIND en `127.0.0.1:5300` y la detiene al salir. El puerto 5300 debe estar libre. Usa `sudo` para preparar y limpiar un directorio temporal bajo `/var/cache/bind`, compatible con el perfil AppArmor de Ubuntu. BIND se ejecuta con el usuario que llama al script.
 
 ## Qué comprueba
 
